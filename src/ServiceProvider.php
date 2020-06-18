@@ -5,6 +5,8 @@ namespace LaravelBoilerplates\BaseBoilerplate;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Spatie\Menu\Laravel\Html;
+use Spatie\Menu\Laravel\Menu;
 use LaravelBoilerplates\BaseBoilerplate\Facades\BaseBoilerplateFacade;
 
 class ServiceProvider extends LaravelServiceProvider
@@ -37,6 +39,15 @@ class ServiceProvider extends LaravelServiceProvider
         // Register the main class to use with the facade
         $this->app->singleton(BaseBoilerplateFacade::class, function () {
             return new Base;
+        });
+
+        // Register a global menu.
+        $this->app->singleton('menu.base', function () {
+            Menu::macro('base', function() {
+                return Menu::new();
+            });
+
+            return Menu::base();
         });
     }
 }

@@ -19,6 +19,15 @@ class Base
     }
 
     /**
+     * Return the global menu.
+     *
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public static function menu() {
+      return app('menu.base');
+    }
+
+    /**
      * Wrap the laravel route() helper with the configured route prefix.
      *
      * @return string

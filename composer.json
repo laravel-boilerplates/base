@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "laravel/framework": "^7.0"
+        "laravel/framework": "^7.0",
+        "spatie/laravel-menu": "dev-master"
     },
     "autoload": {
         "psr-4": {
