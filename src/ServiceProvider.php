@@ -5,9 +5,11 @@ namespace LaravelBoilerplates\BaseBoilerplate;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
-use Spatie\Menu\Laravel\Html;
-use Spatie\Menu\Laravel\Menu;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use LaravelBoilerplates\BaseBoilerplate\Facades\BaseBoilerplateFacade;
+
+use Spatie\Menu\Laravel\Menu;
 
 class ServiceProvider extends LaravelServiceProvider
 {
@@ -19,6 +21,7 @@ class ServiceProvider extends LaravelServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__.'/Database/migrations');
+        $this->loadViewsFrom(__DIR__.'/Views', 'base');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -26,6 +29,13 @@ class ServiceProvider extends LaravelServiceProvider
             ], 'config');
 
             // $this->commands([]);
+        }
+
+        if (!Collection::hasMacro('paginate')) {
+            Collection::macro('paginate', function ($perPage = 15, $page = null, $options = []) {
+                $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+                return (new LengthAwarePaginator($this->forPage($page, $perPage)->values()->all(), $this->count(), $perPage, $page, $options))->withPath('');
+            });
         }
     }
 
@@ -44,7 +54,9 @@ class ServiceProvider extends LaravelServiceProvider
         // Register a global menu.
         $this->app->singleton('menu.base', function () {
             Menu::macro('base', function() {
-                return Menu::new();
+                return Menu::new()
+                  ->addClass('navbar-nav')
+                  ->link('/', 'Home');
             });
 
             return Menu::base();

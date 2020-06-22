@@ -24,7 +24,10 @@ class Base
      * @return \Illuminate\Database\Eloquent\Model
      */
     public static function menu() {
-      return app('menu.base');
+      return app('menu.base')
+        ->each(function (\Spatie\Menu\Link $link) {
+            $link->addParentClass('nav-item')->addClass('nav-link');
+        });
     }
 
     /**
